@@ -45,19 +45,15 @@ namespace WebApplication1.Controllers
 
         }
         [HttpPost]
-        public JsonResult Editdata(Customers customers)
+        public JsonResult Editdata(int id, Customers customers)
         {
-
-            if (customers.Id > 0)
-            {
-                var updateInDb = _db.Customers.Where(m => m.Id == customers.Id).FirstOrDefault<Customers>();
-                updateInDb.Name = customers.Name;
-                updateInDb.Address = customers.Address;
-                updateInDb.GenderId = customers.GenderId;
-                updateInDb.City = customers.City;
-                updateInDb.Country = customers.Country;
-                _db.SaveChanges();
-            }
+            var updateInDb = _db.Customers.Where(m => m.Id == customers.Id).FirstOrDefault<Customers>();
+            updateInDb.Name = customers.Name;
+            updateInDb.Address = customers.Address;
+            updateInDb.GenderId = customers.GenderId;
+            updateInDb.City = customers.City;
+            updateInDb.Country = customers.Country;
+            _db.SaveChanges();
             return Json("success", JsonRequestBehavior.AllowGet);
         }
         public ActionResult GetGender()
