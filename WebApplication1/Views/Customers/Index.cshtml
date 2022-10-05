@@ -1,0 +1,288 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
+<div class="container">
+    <a class="btn btn-primary mb-3" onclick="AddView()" data-toggle="modal" data-target="exampleModal">Add new</a>
+    <table id="example" class="table table-condensed">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Country</th>
+                <th>Gender</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+</div>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-m modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="heading" id="exampleModalLabel"><h5>Create Form</h5></p>
+            </div>
+            <div class="modal-body">
+                <form id="save">
+                    <div class="row col-sm-10">
+                        <div class="form-group">
+                            <label for="">Name</label>
+                            <input type="text" class="form-control" name="Name" id="Name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">Gender</label>
+                            <select class="form-control " id="GenderId" name="GenderId" required>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Address</label>
+                            <input type="text" class="form-control" name="Address" id="Address" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">City</label>
+                            <input type="text" class="form-control"  name="City" id="City" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">Country</label>
+                            <input type="text" class="form-control"  name="Country" id="Country" required />
+                        </div>
+                        
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" value=" submit" class="btn btn-success " id="btnSubmit">Submit</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="editmodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-m modal-notify modal-info" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <p class="heading" id="exampleModalLabel"><h5>Create Form</h5></p>
+            </div>
+            <input type="hidden" name="CustomerId" id="CustomerId" />
+            <div class="modal-body">
+                <form id="edit">
+                    <div class="row col-sm-10">
+                        <div class="form-group">
+                            <label for="">Name</label>
+                            <input type="text" class="form-control" name="Name" id="Name" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">Gender</label>
+                            <select class="form-control " id="GenderId" name="GenderId" required>
+                                <option value="-1">Select Gender</option>
+                                <option value="1">Female</option>
+                                <option value="2">Male</option>
+                                <option value="3">Non-binary</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="">Address</label>
+                            <input type="text" class="form-control" name="Address" id="Address" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">City</label>
+                            <input type="text" class="form-control"  name="City" id="City" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="">Country</label>
+                            <input type="text" class="form-control" name="Country" id="Country" required />
+                        </div>
+
+                    </div>
+                    <input type="hidden" id="CustomerId" name="CustomerId" />
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" value=" submit" class="btn btn-success " id="UpdateRecord">UpdateRecord</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="myModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Delete</h3>
+                <a href="#" class="close" data-dismiss="modal">&times;</a>
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to Remove this Customer?</h4>
+            </div>
+            <div class="modal-footer">
+                <input type="hidden" id="CustomerId" />
+                <a href="#" class="btn btn-secondary" data-dismiss="modal">Cancel</a>
+                <a href="#" class="btn btn-success" id="DeleteSoftware">Confirm</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
+    <script>
+        function AddView() {
+            $("#exampleModal").modal('show');
+
+            $("#Name").val("");
+            $("#Address").val("");
+            $("#GenderId").val("-1");
+            $("#City").val("");
+            $("#Country").val("");
+        }
+
+        var ConfirmDelete = function (cId) {
+            $("#CustomerId").val(cId);
+            $("#myModal").modal('show');
+        }
+
+        function Edit(Id) {
+
+            $.ajax({
+                type: 'GET',
+                url: "/Customers/GetEdit/" + Id,
+                contentType: "application/json;charset=UTF-8",
+                datatype: 'JSON',
+                success: function (result) {
+                    $("#edit").find("#CustomerId").val(result.Id);
+                    $("#edit").find("#Name").val(result.Name);
+                    $("#edit").find("#Address").val(result.Address);
+                    $("#edit").find("#GenderId").val(result.GenderId);
+                    $("#edit").find("#City").val(result.City);
+                    $("#edit").find("#Country").val(result.Country);
+                    //salert(result.GenderId)
+                    $("#editmodal").modal('show');
+                },
+                error: function (msg) {
+                    alert(msg.responseText);
+                }
+            });
+        }
+
+        $(document).ready(function () {
+            $('#example').DataTable({
+                "ajax": {
+                    "type": "GET",
+                    "url": "/Customers/Getdata",
+                    "datatype": "JSON",
+                },
+                "columns": [
+                    { "data": "Id" },
+                    { "data": "Name" },
+                    { "data": "Address" },
+                    { "data": "City" },
+                    { "data": "Country" },
+                    { "data": "Gender.Name" },
+                    {
+                        "data": "Id", "render": function (data) {
+                            return "<a class='btn btn-success edit' id='Edit' onclick = 'Edit(" + data + ")'>Edit<a/> <a class='btn btn-danger' id='ConfirmDelete' onclick = 'ConfirmDelete(" + data + ")'>Delete<a/>"
+                        },
+                        "orderable": false,
+                        "width": "250px",
+                    },
+                ],
+                "language": {
+                    "emptyTable": "No Data Found, you may click on <b>Add New</b>"
+                }
+            });
+
+            $("#btnSubmit").click(function () {
+                
+                //Serialize the form datas.
+                var valdata = $("#save").serialize();
+                //to get alert popup
+                alert(valdata);
+                $.ajax({
+                    url: "/Customers/postdata",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: valdata,
+                    success: function (response) {
+                        if (response == 'success') {
+                            alert("Data Saved");
+                            $("#exampleModal").modal('hide');
+                        }
+                    },
+                    error: function (msg) {
+                        alert(msg.responsetext);
+                    }
+
+                });
+            });
+
+            $("#UpdateRecord").click(function () {
+                //Serialize the form datas.
+                var id = $("#CustomerId").val();
+
+                var valdata = $("#edit").serialize();
+                //to get alert popup
+                alert(valdata);
+                alert(id);
+                $.ajax({
+                    url: "/Customers/Editdata",
+                    type: "POST",
+                    dataType: 'json',
+                    contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+                    data: valdata,
+                    success: function (response) {
+                        if (response == 'success') {
+                            alert("Saved");
+                            $("#editmodal").modal('hide');
+                        }
+                    },
+                    error: function (msg) {
+                        alert(msg.responsetext);
+                    }
+                });
+            });
+
+            $("#DeleteSoftware").click(function () {
+
+                var sft = $("#CustomerId").val();
+                $.ajax({
+                    type: "POST",
+                    url: "/Customers/Delete",
+                    data: { Id: sft },
+                    success: function (result) {
+
+                        $("#myModal").modal("hide");
+                        $("#row_" + sft).remove();
+                        alert("Deleted");
+                    },
+                    error: function (msg) {
+                        alert(msg.responsetext);
+                    }
+                })
+            })
+
+            $.ajax({
+                type: "GET",
+                url: "/Customers/GetGender",
+                data: "{}",
+                success: function (data) {
+                    var d = '<option value="-1">Select Gender</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        d += '<option value="' + data[i].GenderId + '">' + data[i].GenderName + '</option>';
+                    }
+                    $("#GenderId").html(d);
+                }
+            });
+
+        });
+    </script>
+}
